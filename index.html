@@ -24,21 +24,28 @@ html, body{
 }
 body{
 	display:flex;
-	flex-direction:row;
 	width:100%;
 	height:100vh;
 }
 body > div{
 	flex-grow:1;
+	flex-basis:50%;
 
 	display:flex;
 	flex-direction:column;
 }
-textarea, input{
+textarea, input, button{
 	padding:5px;
 }
-input{
-	border-bottom:1px solid #aaa;
+input, button{
+	line-height:2em;
+}
+button{
+	cursor:pointer;
+	background-color:#ccc;
+}
+button:hover{
+	background-color:#aaa;
 }
 textarea{
 	resize:none;
@@ -47,55 +54,68 @@ textarea{
 textarea[disabled]{
 	background-color:#eee;
 }
-@media (max-width: 500px){
-	body{
-		flex-direction:column;
-	}
-}
 		</style>
 		<script>
 window.addEventListener('DOMContentLoaded', function(){
 	var el = {
 		input: document.getElementById('input'),
 		output: document.getElementById('output'),
-		indent: document.getElementById('indent')
+		indent: document.getElementById('indent'),
+		direction: document.getElementById('direction'),
+		wrap: document.getElementById('wrap')
 	}
-	var windowIndentLevel = (function(){
+	var query = (function(){
 		var queryString = window.location.search.replace(/^\?/, '').split('&')
-		var queryHash = {}
+		var output = {}
 		queryString.forEach(function(query){
 			var prop = query.split('=')[0]
 			var val = query.split('=')[1]
-			queryHash[prop] = val
+			output[prop] = val
 		})
-		return queryHash['indent'];
+		return output;
 	})();
 	var updateJSON = function(){
 		var textIn = el.input.value;
 		var indentLevel = parseInt(el.indent.value);
 		var textOut;
-		if(!textIn){
-			return;
-		}
-		try{
-			textOut = JSON.stringify(JSON.parse(textIn), null, (indentLevel || '\t'));
-		}catch(e){
-			textOut = 'Bad JSON. :(';
+		if(!(textIn.trim())){
+			textOut = '';
+		}else{
+			try{
+				textOut = JSON.stringify(JSON.parse(textIn), null, (indentLevel || '\t'));
+			}catch(e){
+				textOut = 'Bad JSON. :(';
+			}
 		}
 		el.output.value = textOut;
 	}
+	var rotate = function(){
+		var current = el.wrap.style.flexDirection;
+		var updated;
+		if(current == 'column'){
+			updated = 'row';
+		}else{
+			updated = 'column';
+		}
+		el.wrap.style.flexDirection = updated;
+	}
 
-	if(windowIndentLevel){
-		el.indent.value = windowIndentLevel;
+	if(query.indent){
+		el.indent.value = query.indent;
+	}
+	if(query.direction){
+		el.wrap.style.flexDirection = query.direction;
 	}
 	el.input.addEventListener('input', updateJSON);
 	el.indent.addEventListener('input', updateJSON);
+	el.direction.addEventListener('click', rotate);
 });
 		</script>
 	</head>
-	<body>
+	<body id="wrap" style="flex-direction:row;">
 		<div>
-			<input type="text" id="indent" placeholder="Indentation here" value="2" />
+			<input type="text" id="indent" placeholder="indent" value="2" />
+			<button id="direction">Change direction</button>
 			<textarea id="input" placeholder="JSON here" spellcheck="false"></textarea>
 		</div>
 		<div>
