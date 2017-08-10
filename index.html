@@ -22,18 +22,27 @@ html, body{
 	position:relative;
 	font-family:monospace;
 }
-table{
-	table-layout:fixed;
-	border-collapse:collapse;
+body{
+	display:flex;
+	flex-direction:row;
 	width:100%;
 	height:100vh;
 }
-textarea{
-	box-sizing:border-box;
+body > div{
+	flex-grow:1;
+
+	display:flex;
+	flex-direction:column;
+}
+textarea, input{
 	padding:5px;
-	width:100%;
-	height:100%;
+}
+input{
+	border-bottom:1px solid #aaa;
+}
+textarea{
 	resize:none;
+	flex-grow:1;
 }
 textarea[disabled]{
 	background-color:#eee;
@@ -43,27 +52,49 @@ textarea[disabled]{
 window.addEventListener('DOMContentLoaded', function(){
 	var el = {
 		input: document.getElementById('input'),
-		output: document.getElementById('output')
+		output: document.getElementById('output'),
+		indent: document.getElementById('indent')
 	}
-	el.input.addEventListener('input', function(){
+	var windowIndentLevel = (function(){
+		var queryString = window.location.search.replace(/^\?/, '').split('&')
+		var queryHash = {}
+		queryString.forEach(function(query){
+			var prop = query.split('=')[0]
+			var val = query.split('=')[1]
+			queryHash[prop] = val
+		})
+		return queryHash['indent'];
+	})();
+	var updateJSON = function(){
 		var textIn = el.input.value;
+		var indentLevel = parseInt(el.indent.value);
 		var textOut;
+		if(!textIn){
+			return;
+		}
 		try{
-			textOut = JSON.stringify(JSON.parse(textIn), null, '\t');
+			textOut = JSON.stringify(JSON.parse(textIn), null, (indentLevel || '\t'));
 		}catch(e){
 			textOut = 'Bad JSON. :(';
 		}
 		el.output.value = textOut;
-	});
+	}
+
+	if(windowIndentLevel){
+		el.indent.value = windowIndentLevel;
+	}
+	el.input.addEventListener('input', updateJSON);
+	el.indent.addEventListener('input', updateJSON);
 });
 		</script>
 	</head>
 	<body>
-		<table>
-			<tr>
-				<td><textarea id="input" placeholder="JSON here" spellcheck="false"></textarea></td>
-				<td><textarea id="output" disabled></textarea></td>
-			</tr>
-		</table>
+		<div>
+			<input type="text" id="indent" placeholder="Indentation here" value="2" />
+			<textarea id="input" placeholder="JSON here" spellcheck="false"></textarea>
+		</div>
+		<div>
+			<textarea id="output" disabled placeholder="Formatted JSON will go here"></textarea>
+		</div>
 	</body>
 </html>
