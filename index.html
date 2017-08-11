@@ -4,6 +4,7 @@
 		<!-- Hosted on GH Pages -->
 		<!-- https://github.com/robertakarobin/json -->
 		<title>JSON Formatter</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<style>
 * {
 	margin: 0;
@@ -16,6 +17,7 @@
 	text-decoration: inherit;
 	line-height: inherit;
 	color: inherit;
+	background-color:transparent;
 }
 *:focus{
 	outline:none;
@@ -23,38 +25,44 @@
 html, body{
 	position:relative;
 	font-family:monospace;
+	font-size:14px;
 }
-body{
+div{
+	position:relative;
+}
+.wrap{
 	display:flex;
 	width:100%;
 	height:100vh;
-}
-body > div{
-	flex-grow:1;
-	flex-basis:50%;
-
-	display:flex;
 	flex-direction:column;
 }
-textarea, input, button{
-	padding:5px;
+.wrap > *{
+	flex-grow:0;
 }
-input, button{
-	line-height:2em;
-}
-button{
-	cursor:pointer;
-	background-color:#ccc;
-}
-button:hover{
-	background-color:#aaa;
-}
-textarea{
-	resize:none;
+.wrap > #output{
 	flex-grow:1;
 }
-textarea[disabled]{
-	background-color:#eee;
+label{
+	display:flex;
+	flex-direction:row;
+	border-bottom:1px solid #ccc;
+	background-color:#f0f0f0;
+}
+label > span{
+	border-right:1px solid #ddd;
+}
+label > *,
+input, textarea{
+	padding:5px 10px;
+}
+label > *{
+	line-height:20px;
+	height:20px;
+}
+label > input,
+label > textarea{
+	flex-grow:1;
+	background:linear-gradient(80deg, rgba(0,0,0,0.3), rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.03) 40px);
 }
 		</style>
 		<script>
@@ -63,7 +71,6 @@ window.addEventListener('DOMContentLoaded', function(){
 		input: document.getElementById('input'),
 		output: document.getElementById('output'),
 		indent: document.getElementById('indent'),
-		direction: document.getElementById('direction'),
 		wrap: document.getElementById('wrap')
 	}
 	var query = (function(){
@@ -91,37 +98,26 @@ window.addEventListener('DOMContentLoaded', function(){
 		}
 		el.output.value = textOut;
 	}
-	var rotate = function(){
-		var current = el.wrap.style.flexDirection;
-		var updated;
-		if(current == 'column'){
-			updated = 'row';
-		}else{
-			updated = 'column';
-		}
-		el.wrap.style.flexDirection = updated;
-	}
 
 	if(query.indent){
 		el.indent.value = query.indent;
 	}
-	if(query.direction){
-		el.wrap.style.flexDirection = query.direction;
-	}
 	el.input.addEventListener('input', updateJSON);
 	el.indent.addEventListener('input', updateJSON);
-	el.direction.addEventListener('click', rotate);
 });
 		</script>
 	</head>
-	<body id="wrap" style="flex-direction:row;">
-		<div>
-			<input type="text" id="indent" placeholder="indent" value="2" />
-			<button id="direction">Change direction</button>
-			<textarea id="input" placeholder="JSON here" spellcheck="false"></textarea>
-		</div>
-		<div>
-			<textarea id="output" disabled placeholder="Formatted JSON will go here"></textarea>
+	<body>
+		<div class="wrap">
+			<label>
+				<span>Indentation:</span>
+				<input type="text" id="indent" placeholder="A number, or \t for tabs" value="2" spellcheck="false" />
+			</label>
+			<label>
+				<span>Ugly JSON goes here:</span>
+				<textarea id="input" spellcheck="false" placeholder='{"foo": "bar"}'></textarea>
+			</label>
+			<textarea id="output" disabled placeholder="...and pretty JSON comes out here!"></textarea>
 		</div>
 	</body>
 </html>
