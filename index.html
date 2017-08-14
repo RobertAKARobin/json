@@ -49,25 +49,28 @@ label{
 	background-color:#f0f0f0;
 	cursor:pointer;
 }
-label > span{
-	border-right:1px solid #ddd;
-}
 label > *,
 input, textarea{
 	padding:5px 10px;
 }
 label > *{
 	line-height:20px;
-	height:20px;
 }
 label > input,
 label > textarea{
 	flex-grow:1;
-	background:linear-gradient(80deg, rgba(0,0,0,0.3), rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.03) 40px);
+	border-left:1px solid #ddd;
+	background:linear-gradient(80deg, rgba(0,0,0,0.3), rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.03));
 }
 input:focus,
 textarea:focus{
 	background-color:rgba(0,0,0,0.05);
+}
+textarea{
+	resize:vertical;
+}
+.aside{
+	color:#aaa;
 }
 		</style>
 		<script>
@@ -76,7 +79,8 @@ window.addEventListener('DOMContentLoaded', function(){
 		input: document.getElementById('input'),
 		output: document.getElementById('output'),
 		indent: document.getElementById('indent'),
-		wrap: document.getElementById('wrap')
+		wrap: document.getElementById('wrap'),
+		chars: document.getElementById('chars')
 	}
 	var query = (function(){
 		var queryString = window.location.search.replace(/^\?/, '').split('&')
@@ -92,6 +96,8 @@ window.addEventListener('DOMContentLoaded', function(){
 		var textIn = el.input.value;
 		var indentLevel = parseInt(el.indent.value);
 		var textOut;
+		var chars = textIn.length;
+		el.chars.textContent = chars;
 		if(!(textIn.trim())){
 			textOut = '';
 		}else{
@@ -109,17 +115,21 @@ window.addEventListener('DOMContentLoaded', function(){
 	}
 	el.input.addEventListener('input', updateJSON);
 	el.indent.addEventListener('input', updateJSON);
+	updateJSON();
 });
 		</script>
 	</head>
 	<body>
 		<div class="wrap">
 			<label>
-				<span>Indentation:</span>
-				<input type="text" id="indent" placeholder="A number, or \t for tabs" value="2" spellcheck="false" />
+				<div>Indentation:</div>
+				<input type="text" id="indent" placeholder="A number, or blank for tabs" spellcheck="false" />
 			</label>
 			<label>
-				<span>Ugly JSON goes here:</span>
+				<span>
+					Ugly JSON goes here:<br />
+					<span class="aside"><span id="chars"></span> characters</span>
+				</span>
 				<textarea id="input" spellcheck="false" placeholder='{"foo": "bar"}'></textarea>
 			</label>
 			<textarea id="output" disabled placeholder="...and pretty JSON comes out here!"></textarea>
