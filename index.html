@@ -32,42 +32,39 @@ div{
 }
 .wrap{
 	display:flex;
+	flex-direction:row;
 	width:100%;
 	height:100vh;
-	flex-direction:column;
 }
 .wrap > *{
-	flex-grow:0;
+	flex-basis:50%;
+	display:flex;
+	flex-direction:column;
 }
-.wrap > #output{
+textarea{
 	flex-grow:1;
+}
+.controls{
+	background-color:#f0f0f0;
+	border-right:1px solid #ddd;
 }
 label{
-	display:flex;
-	flex-direction:row;
-	border-bottom:1px solid #ccc;
-	background-color:#f0f0f0;
-	cursor:pointer;
-}
-label > *,
-input, textarea{
 	padding:5px 10px;
-}
-label > *{
 	line-height:20px;
 }
-label > input,
-label > textarea{
-	flex-grow:1;
-	border-left:1px solid #ddd;
-	background:linear-gradient(80deg, rgba(0,0,0,0.3), rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.03));
+.controls input,
+.controls textarea{
+	background:linear-gradient(170deg, rgba(0,0,0,0.3), rgba(0,0,0,0.04) 20px, rgba(0,0,0,0.03));
+}
+input,
+textarea{
+	padding:5px 10px;
+	line-height:20px;
+	resize:none;
 }
 input:focus,
 textarea:focus{
 	background-color:rgba(0,0,0,0.05);
-}
-textarea{
-	resize:vertical;
 }
 .aside{
 	color:#aaa;
@@ -121,18 +118,17 @@ window.addEventListener('DOMContentLoaded', function(){
 	</head>
 	<body>
 		<div class="wrap">
-			<label>
-				<div>Indentation:</div>
+			<div class="controls">
+				<label for="indent">Indentation:</label>
 				<input type="text" id="indent" placeholder="A number, or blank for tabs" spellcheck="false" />
-			</label>
-			<label>
-				<span>
-					Ugly JSON goes here:<br />
+				<label for="input">Ugly JSON goes here:
 					<span class="aside"><span id="chars"></span> characters</span>
-				</span>
+				</label>
 				<textarea id="input" spellcheck="false" placeholder='{"foo": "bar"}'></textarea>
-			</label>
-			<textarea id="output" disabled placeholder="...and pretty JSON comes out here!"></textarea>
+			</div>
+			<div>
+				<textarea id="output" disabled placeholder="...and pretty JSON comes out here!"></textarea>
+			</div>
 		</div>
 	</body>
 </html>
