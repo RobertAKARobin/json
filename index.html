@@ -72,48 +72,43 @@ textarea:focus{
 		</style>
 		<script>
 window.addEventListener('DOMContentLoaded', function(){
-	var el = {
+	const el = {
 		input: document.getElementById('input'),
 		output: document.getElementById('output'),
 		indent: document.getElementById('indent'),
 		wrap: document.getElementById('wrap'),
 		chars: document.getElementById('chars')
 	}
-	var query = (function(){
-		var queryString = window.location.search.replace(/^\?/, '').split('&')
-		var output = {}
-		queryString.forEach(function(query){
-			var prop = query.split('=')[0]
-			var val = query.split('=')[1]
-			output[prop] = val
-		})
-		return output;
-	})();
-	var updateJSON = function(){
-		var textIn = el.input.value;
-		var indentLevel = parseInt(el.indent.value);
-		var textOut;
-		var chars = textIn.length;
-		el.chars.textContent = chars;
+	const query = window.location.search.replace(/^\?/, '').split('&').reduce((map, query)=>{
+		map[query.split('=')[0]] = query.split('=')[1]
+		return map
+	}, {})
+	const updateJSON = function(){
+		const textIn = el.input.value
+		const indentLevel = parseInt(el.indent.value)
+		const chars = textIn.length
+		let textOut
+
+		el.chars.textContent = chars
 		if(!(textIn.trim())){
-			textOut = '';
+			textOut = ''
 		}else{
 			try{
-				textOut = JSON.stringify(JSON.parse(textIn), null, (indentLevel || '\t'));
+				textOut = JSON.stringify(JSON.parse(textIn), null, (indentLevel || '\t'))
 			}catch(e){
-				textOut = 'Bad JSON. :(';
+				textOut = 'Bad JSON. :('
 			}
 		}
-		el.output.value = textOut;
+		el.output.value = textOut
 	}
 
 	if(query.indent){
-		el.indent.value = query.indent;
+		el.indent.value = query.indent
 	}
-	el.input.addEventListener('input', updateJSON);
-	el.indent.addEventListener('input', updateJSON);
-	updateJSON();
-});
+	el.input.addEventListener('input', updateJSON)
+	el.indent.addEventListener('input', updateJSON)
+	updateJSON()
+})
 		</script>
 	</head>
 	<body>
