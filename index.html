@@ -19,55 +19,81 @@
 	color: inherit;
 	background-color:transparent;
 }
+
 *:focus{
 	outline:none;
 }
-html, body{
-	position:relative;
+
+:root {
 	font-family:monospace;
 	font-size:14px;
 }
-div{
-	position:relative;
-}
-.wrap{
+
+.wrap {
 	display:flex;
-	flex-direction:row;
 	width:100%;
 	height:100vh;
 }
-.wrap > *{
-	flex-basis:50%;
+
+.wrap-item {
 	display:flex;
 	flex-direction:column;
 }
-textarea{
-	flex-grow:1;
-}
+
 .controls{
 	background-color:#f0f0f0;
 	border-right:1px solid #ddd;
 }
+
+textarea {
+	height: 100%;
+}
+
 label{
 	padding:5px 10px;
 	line-height:20px;
 }
+
 .controls input,
 .controls textarea{
 	background:linear-gradient(170deg, rgba(0,0,0,0.3), rgba(0,0,0,0.04) 20px, rgba(0,0,0,0.03));
 }
+
 input,
 textarea{
 	padding:5px 10px;
 	line-height:20px;
 	resize:none;
 }
+
 input:focus,
 textarea:focus{
 	background-color:rgba(0,0,0,0.05);
 }
+
 .aside{
 	color:#aaa;
+}
+
+@media (min-width: 801px) {
+	.wrap {
+		flex-direction:row;
+	}
+
+	.wrap-item {
+		flex-basis:50%;
+	}
+}
+
+@media (max-width: 800px) {
+	.wrap {
+		flex-direction: column;
+	}
+
+	.display {
+		border-top: 10px solid #fff;
+		flex-grow: 1;
+	}
 }
 		</style>
 		<script>
@@ -111,19 +137,17 @@ window.addEventListener('DOMContentLoaded', function(){
 })
 		</script>
 	</head>
-	<body>
-		<div class="wrap">
-			<div class="controls">
-				<label for="indent">Indentation:</label>
-				<input type="text" id="indent" placeholder="A number, or blank for tabs" spellcheck="false" />
-				<label for="input">Ugly JSON goes here:
-					<span class="aside"><span id="chars"></span> characters</span>
-				</label>
-				<textarea id="input" spellcheck="false" placeholder='{"foo": "bar"}'></textarea>
-			</div>
-			<div>
-				<textarea id="output" disabled placeholder="...and pretty JSON comes out here!"></textarea>
-			</div>
+	<body class="wrap">
+		<div class="wrap-item controls">
+			<label for="indent">Indentation:</label>
+			<input type="text" id="indent" placeholder="A number, or blank for tabs" spellcheck="false" />
+			<label for="input">Ugly JSON goes here:
+				<span class="aside"><span id="chars"></span> characters</span>
+			</label>
+			<textarea id="input" spellcheck="false" placeholder='{"foo": "bar"}'></textarea>
+		</div>
+		<div class="wrap-item display">
+			<textarea id="output" disabled placeholder="...and pretty JSON comes out here!"></textarea>
 		</div>
 	</body>
 </html>
