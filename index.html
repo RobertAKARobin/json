@@ -113,19 +113,21 @@ window.addEventListener('DOMContentLoaded', function(){
 		const textIn = el.input.value
 		const indentLevel = parseInt(el.indent.value)
 		const chars = textIn.length
-		let textOut
+		let textOut, textParsed
 
 		el.chars.textContent = chars
 		if(!(textIn.trim())){
 			textOut = ''
 		}else{
 			try{
-				textOut = JSON.stringify(JSON.parse(textIn), null, (indentLevel || '\t'))
+				textParsed = JSON.parse(textIn)
+				textOut = JSON.stringify(textParsed, null, (indentLevel || '\t'))
 			}catch(e){
 				textOut = 'Bad JSON. :('
 			}
 		}
 		el.output.value = textOut
+		window.$json = textParsed
 	}
 
 	if(query.indent){
